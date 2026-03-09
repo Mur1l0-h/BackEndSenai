@@ -11,5 +11,5 @@ class Estoque extends Model
     use HasFactory, Notifiable;
 
 
-   protected $fillable = [ 'preco', 'quantidade' ];
+   protected $fillable = [ 'preco', 'quantidade', 'produto_id' ];
 }
