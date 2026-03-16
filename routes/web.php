@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
 // Route::get('/clientes/create', [ClienteController::class , 'create'])->name('clientes.create');
 // Route::get('/clientes/edit', [ClienteController::class , 'edit'])->name('clientes.edit');
 // Route::post('/clientes', [ClienteController::class , 'store'])->name('clientes.store');
+// Route::get('/clientes/edit', [ClienteController::class , 'edit'])->name('clientes.edit');
+// Route::post('/clientes', [ClienteController::class , 'store'])->name('clientes.store');
 
 
 Route::resources([

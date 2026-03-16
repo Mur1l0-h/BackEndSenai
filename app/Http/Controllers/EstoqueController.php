@@ -29,7 +29,27 @@ class EstoqueController extends Controller
         Estoque::create($request->all());
         return redirect()->route('estoque.index')->with('success', 'Estoque atualizado com sucesso');
     }
-    public function edit(){
+    public function edit(Estoque $estoque){
+        return view('estoque.edit', compact('estoque'));
+    }
 
+      public function update(Request $request, Estoque $estoque){
+        $request->mergeIfMissing([
+            'produto_id' => 1
+        ]);
+
+      $request->validate([
+        'preco' => 'required|decimal:0,2',
+        'quantidade' => 'required|integer',
+        'produto_id' => 'required|integer'
+        ]);
+
+        $estoque->update($request->all());
+        return redirect()->route('estoque.index')->with('success', 'Estoque alterado com sucesso!');
+    }
+
+    public function destroy(Estoque $estoque){
+        $estoque->delete();
+        return redirect()->route('estoque.index')->with('success', 'Estoque excluído com sucesso!');
     }
 }

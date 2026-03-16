@@ -11,6 +11,6 @@ class Pedidos extends Model
 
     use HasFactory;
 
-    protected $fillable = ['quantidade', 'valor', 'clientes_id', 'fornecedors_id'];
+    protected $fillable = ['quantidade', 'valor', 'clientes_id', 'fornecedors_id', 'id_pedido'];
 
 }
