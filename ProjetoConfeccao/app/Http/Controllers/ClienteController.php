@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use \App\Models\Clientes;
+
+class ClienteController extends Controller
+{
+    public function index(){
+        $clientes = Clientes::all(); // Busca todos os clientes 
+        return view('clientes.index', compact('clientes'));
+    }
+
+    
+    public function create(){
+        return view('clientes.create');
+    }
+    public function edit(Clientes $cliente){
+        return view('clientes.edit', compact('cliente'));
+    }
+
+    public function update(Request $request, Clientes $cliente){
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'cpf' => 'required|string|unique:clientes,cpf,' . $cliente->id,
+            'telefone' => 'required|string|unique:clientes,telefone,' . $cliente->id,
+            'reserva' => 'required|boolean',
+        ]);
+
+        $cliente->update($request->all());
+        return redirect()->route('clientes.index')->with('success', 'Cliente editado com sucesso!');
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'cpf' => 'required|string|unique:clientes',
+            'telefone' => 'required|string|unique:clientes',
+            'reserva' => 'required|boolean',
+        ]);
+
+        Clientes::create($request->all());
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente cadastrado com sucesso!');
+
+    }
+
+    public function destroy(Clientes $cliente){
+        $cliente->delete();
+        return redirect()->route('clientes.index')->with('success', 'Cliente deletado com sucesso!');
+    }
+
+    // public function show(){
+
+    // }
+}
