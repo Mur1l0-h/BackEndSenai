@@ -11,6 +11,7 @@ use App\Filament\Resources\MovimentacaoEstoques\Schemas\MovimentacaoEstoqueInfol
 use App\Filament\Resources\MovimentacaoEstoques\Tables\MovimentacaoEstoquesTable;
 use App\Models\MovimentacaoEstoque;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -27,8 +28,17 @@ class MovimentacaoEstoqueResource extends Resource
     protected static ?string $model = MovimentacaoEstoque::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = "Estoque";
+
+
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'Movimentação do Estoque';
+
+      protected static ?string $navigationLabel = "Movimentação Estoque";
+    protected static ?string $modelLabel = "Movimentação Estoque";
+    protected static ?string $pluralModelLabel = "Movimentação Estoque";
+
 
     public static function form(Schema $schema): Schema
     {

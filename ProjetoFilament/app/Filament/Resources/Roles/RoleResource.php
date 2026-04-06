@@ -11,6 +11,7 @@ use App\Filament\Resources\Roles\Schemas\RoleInfolist;
 use App\Filament\Resources\Roles\Tables\RolesTable;
 use Spatie\Permission\Models\Role;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -30,8 +31,16 @@ class RoleResource extends Resource
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = "Permissões";
 
-    protected static ?string $recordTitleAttribute = 'Roles';
+    protected static ?string $recordTitleAttribute = 'Funções';
+    
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $navigationLabel = "Cargo";
+    protected static ?string $modelLabel = "Cargo";
+    protected static ?string $pluralModelLabel = "Cargos";
+
 
     public static function form(Schema $schema): Schema
     {

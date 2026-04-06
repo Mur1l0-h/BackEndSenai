@@ -10,6 +10,7 @@ use App\Filament\Resources\Clientes\Schemas\ClienteForm;
 use App\Filament\Resources\Clientes\Schemas\ClienteInfolist;
 use App\Filament\Resources\Clientes\Tables\ClientesTable;
 use App\Models\Cliente;
+use UnitEnum;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -22,13 +23,16 @@ class ClienteResource extends Resource
 {
     protected static ?string $model = Cliente::class;
 
+    protected static string|UnitEnum|null $navigationGroup = "Cadastros gerais";
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'Painel Teste';
 
     public static function form(Schema $schema): Schema
     {
-        // ClienteForm::configure($schema);
+        
         return $schema->schema([
             TextInput::make('nome')->required()->label('Nome Completo'),
             TextInput::make('email')->email()->label('E-mail'),

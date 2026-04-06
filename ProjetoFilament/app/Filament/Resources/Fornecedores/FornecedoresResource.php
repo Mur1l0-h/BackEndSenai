@@ -11,6 +11,7 @@ use App\Filament\Resources\Fornecedores\Schemas\FornecedoresInfolist;
 use App\Filament\Resources\Fornecedores\Tables\FornecedoresTable;
 use App\Models\Fornecedores;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -23,8 +24,19 @@ class FornecedoresResource extends Resource
     protected static ?string $model = Fornecedores::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    
+    protected static string|UnitEnum|null $navigationGroup = "Cadastros gerais";
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'Fornecedores';
+
+    protected static ?string $navigationLabel = "Fornecedor";
+    protected static ?string $modelLabel = "Fornecedor";
+    protected static ?string $pluralModelLabel = "Fornecedor";
+
+
+
 
     public static function form(Schema $schema): Schema
     {
