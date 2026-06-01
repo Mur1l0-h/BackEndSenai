@@ -1,58 +1,159 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🧵 Sistema de Gestão de Confecção
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicação web desenvolvida com **Laravel 13** + **Filament 5** para gerenciamento de uma confecção têxtil, com controle de clientes, fornecedores, produtos, insumos, pedidos e movimentação de estoque.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🏗️ Arquitetura
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Stack
+- **Backend:** PHP 8.3 + Laravel 13
+- **Frontend Admin:** Filament 5 (PHP puro, sem Vue/React)
+- **Banco:** MySQL (`confeccaota2`)
+- **Autenticação:** Spatie Laravel Permission (RBAC)
+- **E-mail:** Mailpit (SMTP em ambiente de desenvolvimento) → `http://localhost:8025`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📂 Estrutura do Projeto
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Models (Camada de Dados)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Model | Tabela | Descrição |
+|-------|--------|-----------|
+| `User` | `users` | Usuários do sistema (autenticação + permissões Spatie) |
+| `Cliente` | `clientes` | Clientes da confecção (nome, email, telefone) |
+| `Fornecedores` | `fornecedores` | Fornecedores de materiais |
+| `Produto` | `produtos` | Produtos comercializados (matéria-prima ou item final) |
+| `Insumo` | `insumos` | Matérias-primas / insumos |
+| `Pedido` | `pedidos` | Pedidos dos clientes (status, valor_total) |
+| `ItemPedido` | `item_pedidos` | Itens que compõem cada pedido (produto, qtd, preço) |
+| `MovimentacaoEstoque` | `movimentacao_estoques` | Entradas e saídas de estoque |
+| `EmailLog` | `email_logs` | **Histórico de e-mails enviados** (nova funcionalidade) |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Relacionamentos Principais
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+Cliente (1) ──────────── (N) Pedido
+Pedido (1) ───────────── (N) ItemPedido
+ItemPedido (N) ───────── (1) Produto
+Produto (1) ──────────── (N) MovimentacaoEstoque
+Pedido (1) ───────────── (N) EmailLog
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 🖥️ Painel Administrativo (Filament)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Acessível em `/admin`, dividido em **grupos de navegação**:
 
-## Code of Conduct
+### 🔐 Permissões (Spatie)
+- **Roles** – Gerenciar papéis (admin, operador, etc.)
+- **Permissions** – Gerenciar permissões específicas
+- **Users** – Gerenciar usuários do sistema
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 📋 Cadastros Gerais
+- **Clientes** – CRUD completo (nome, email, telefone)
+- **Fornecedores** – CRUD completo
+- **Produtos** – CRUD completo
+- **Insumos** – CRUD completo
 
-## Security Vulnerabilities
+### 📦 Estoque
+- **Movimentações** – Registro de entradas/saídas de produtos
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 💰 Vendas
+- **Pedidos** – Criação e edição de pedidos:
+  - Seleção de cliente
+  - Itens do pedido com produto, quantidade e preço unitário
+  - **Cálculo automático** do valor total (soma qtd × preço)
+  - Status: `Pendente` → `Em produção` → `Finalizado`
+  - **Ao mudar o status → e-mail automático para o cliente** 📧
+- **E-mails** – Histórico de e-mails enviados:
+  - Pedido relacionado, cliente, status anterior/novo, data de envio
 
-## License
+### 📊 Widgets
+- Gráfico de exemplo na dashboard (valores mensais)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## ✉️ Sistema de Notificações (Mailpit)
+
+### Como funciona
+1. No **painel admin**, ao editar um pedido e alterar seu **status**
+2. O sistema captura o status **anterior** antes de salvar
+3. Após salvar, compara com o **novo** status
+4. Se houve mudança e o cliente tem **e-mail cadastrado**:
+   - Um e-mail HTML é enviado via Mailpit (SMTP porta 1025)
+   - Um registro é salvo na tabela `email_logs`
+
+### Template do e-mail
+- Nome do cliente
+- Status atual com badge colorido
+- Valor total do pedido
+- Tabela com todos os itens (produto, quantidade, preço, subtotal)
+
+### Logs de e-mail
+Disponível em **admin/email-logs** com:
+- Número do pedido | Cliente | E-mail | Status anterior | Status novo | Assunto | Data de envio
+
+---
+
+## ⚙️ Configuração do Ambiente
+
+### .env (Mailpit)
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_FROM_ADDRESS="confeccao@example.com"
+```
+
+Mailpit UI: `http://localhost:8025`
+
+### Banco de Dados
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=confeccaota2
+DB_USERNAME=root
+DB_PASSWORD=senaisp
+```
+
+---
+
+## 🚀 Como Executar
+
+```bash
+# 1. Instalar dependências
+composer install
+npm install && npm run build
+
+# 2. Configurar .env (copiar de .env.example)
+cp .env.example .env
+php artisan key:generate
+
+# 3. Rodar migrations
+php artisan migrate
+
+# 4. Iniciar servidor
+php artisan serve
+
+# 5. Acessar
+# Painel: http://localhost/admin
+# Mailpit: http://localhost:8025
+```
+
+---
+
+## 🧪 Comandos Úteis
+
+```bash
+# Testar envio de e-mail via Mailpit
+php artisan mail:test
+
+# Limpar cache
+php artisan optimize:clear
+
+# Listar rotas admin
+php artisan route:list --path=admin
